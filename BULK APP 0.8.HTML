@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HaulWorks</title>
+    <link rel="icon" href="https://img.icons8.com/ultraviolet/80/000000/toolbox.png" type="image/png">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, #ffffff, #78c9ff);
+            color: #000;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 90%;
+            margin: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 0;
+        }
+        h1 {
+            font-size: 32px;
+            color: #0078d0;
+            font-weight: 900;
+        }
+        h2 {
+            font-size: 14px;
+            color: #0078d0;
+            margin-top: 5px;
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+        .logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 2px solid #0078d0;
+            background-color: #cce7ff;
+        }
+        input::placeholder {
+            text-transform: none;
+        }
+        .icons, .load-buttons, .order-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        .icon, .load-button, .order-button {
+            border: 2px solid #0078d0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            margin: 0 10px;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 17px;
+            font-weight: 400;
+            line-height: 1.47059;
+            flex: 1;
+        }
+        .icon img, .order-button img {
+            width: 50px; /* Increased size from 30px to 50px */
+            height: 50px; /* Increased size from 30px to 50px */
+            display: block;
+            margin: 0 auto;
+        }
+        .icon.selected, .load-button.selected, .order-button.selected {
+            background-color: #0078d0;
+            color: #fff;
+        }
+        .icon:hover, .load-button:hover, .order-button:hover {
+            background-color: #0078d0;
+            color: #fff;
+        }
+        .order-button:hover div {
+            color: #fff; /* Change text color to white when hovering */
+        }
+        .button-71 {
+            background-color: #0078d0;
+            border: 0;
+            border-radius: 8px;
+            color: #fff;
+            cursor: pointer;
+            display: inline-block;
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            padding: 10px 16px;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s;
+            user-select: none;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .button-71:hover {
+            box-shadow: rgba(0, 0, 0, 0.1) 0 3px 5px;
+            transform: scale(1.05);
+        }
+        .results {
+            margin-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+            width: 100%;
+        }
+        .result-item {
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .result-item:hover {
+            background-color: #cce7ff;
+            transform: scale(1.05);
+        }
+        .result-item.selected {
+            background-color: #cce7ff;
+        }
+        .result-item.selected::after {
+            content: '✔';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #0078d0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .result-item p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        .result-item p.yard-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .result-item p.time, .result-item p.total-cost {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .result-item p.hauler-rate {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .result-item p.hauler-rate::after {
+            content: '_________________________';
+            display: block;
+            margin-top: 5px;
+        }
+        .scroll-container {
+            overflow-y: auto;
+            max-height: 70vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .tier-selection {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .tier-button {
+            background: #0078d0;
+            border: none;
+            border-radius: 8px;
+            color: #FFFFFF;
+            cursor: pointer;
+            display: inline-block;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 13px 16px;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+            margin: 0 10px;
+        }
+        .tier-button:hover {
+            background-color: #0056b3;
+        }
+        .tier-button.selected {
+            background-color: #0056b3;
+        }
+        .tier-button .tier-percentage {
+            font-size: 12px;
+            display: block;
+        }
+        .sort-header, .load-header, .section-header {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #0078d0;
+        }
+        .order-buttons div {
+            text-align: center;
+            font-size: 17px;
+            font-weight: 400;
+            color: #000;
+            flex: 1;
+        }
+        .order-button {
+            flex: 1;
+            max-width: 150px;
+            border: 2px solid #0078d0;
+        }
+        .final-price {
+            font-weight: bold;
+            font-size: 24px;
+            text-decoration: underline;
+            margin-top: 20px;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .yard-list {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 70vh;
+            margin-right: 20px;
+            width: 100%;
+        }
+        .map-container {
+            flex: 2;
+            width: 100%;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .selected-yard {
+            background-color: #0078d0;
+            color: #fff;
+            padding: 5px 25px 5px 10px;
+            border-radius: 20px;
+            margin: 5px;
+            display: inline-block;
+            position: relative;
+            font-size: 16px;
+        }
+        .selected-yard .remove-yard {
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: #fff;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .selected-yard-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .full-load-icon:hover::before, .underload-icon:hover::before, .full-load-icon.selected::before, .underload-icon.selected::before {
+            color: #fff;
+        }
+        .refresh-icon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            z-index: 1;
+            width: 25px; /* Reduced size */
+            height: 25px; /* Reduced size */
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .checkbox-container input {
+            margin-right: 10px;
+        }
+        .input-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .input-group-inline input {
+            width: 150px;
+        }
+        .input-group-inline select {
+            width: auto;
+        }
+        .info-window {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #000;
+        }
+        .info-window b {
+            font-size: 16px;
+        }
+        .info-window .time, .info-window .total-cost {
+            font-weight: bold;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .button-group img {
+            width: 24px;
+            height: 24px;
+        }
+        .button-group .button-text {
+            display: block;
+            font-size: 12px;
+            margin-top: 5px;
+            color: #fff;
+        }
+        .gm-ui-hover-effect {
+            display: none !important;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-width: 90%;
+        }
+        .popup input {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: calc(100% - 10px);
+            box-sizing: border-box;
+        }
+        .popup .close-btn {
+            background-color: #0078d0;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .popup .popup-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .popup .popup-row label {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .popup .popup-row input {
+            flex: 1;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCF1scAZ9z_wT3AKgy4MOgaw90TmUYksPc&libraries=places"></script>
+    <script>
+        let haulageRatesPerMinutePerTon = {
+            'TRAILER': 1225 / 600 / 36,
+            'TRIAXLE': 900 / 600 / 22.5,
+            'SLINGER': 1500 / 600 / 20
+        };
+        let truckCapacities = {
+            'TRAILER': 36,
+            'TRIAXLE': 22.5,
+            'SLINGER': 20
+        };
+        let dailyRates = {
+            'TRAILER': 1225,
+            'TRIAXLE': 900,
+            'SLINGER': 1500
+        };
+        let workDays = {
+            'TRAILER': 600,
+            'TRIAXLE': 600,
+            'SLINGER': 600
+        };
+
+        const yards = {
+            'NELSON - MAPLE': { lat: 43.867139, lng: -79.518491, 'LIMESTONE SCREENINGS': 20.00, '3/4" CRUSHER RUN 19MM LIME': 21.50, '2" CRUSHER RUN 50MM-LIME': 21.50, '3/4" CLEAR LIMESTONE': 28.05, '2" CLEAR LIMESTONE': 28.05 },
+            'BROCK TOTTENHAM': { lat: 44.005916, lng: -79.837291, 'LIMESTONE SCREENINGS': 17.30 },
+            'MILLER - FURFARI PASSMORE (SCARB)': { lat: 43.826745, lng: -79.232472, 'LIMESTONE SCREENINGS': 21.50 },
+            'STRADA BRAMPTON WENTWORTH #45': { lat: 43.698294, lng: -79.711738, 'LIMESTONE SCREENINGS': 25.00 },
+            'R.W TOMLINSON': { lat: 44.418043, lng: -79.722263, 'LIMESTONE SCREENINGS': 6.90 },
+            'DUFFERIN ACTON': { lat: 43.636272, lng: -80.002677, 'LIMESTONE SCREENINGS': 11.96 },
+            'BROCK WARDEN': { lat: 43.912609, lng: -79.359780, 'LIMESTONE SCREENINGS': 17.95 },
+            'MILLER BLOOMINGTON (RICHMOND HILL)': { lat: 43.930966, lng: -79.422634, 'LIMESTONE SCREENINGS': 18.90 },
+            'SNOWBALL': { lat: 43.990730, lng: -79.514250, 'LIMESTONE SCREENINGS': 17.30 },
+            'LAFARGE - STOUFFVILLE': { lat: 44.012132, lng: -79.301590, 'LIMESTONE SCREENINGS': 20.50 },
+            'HALTON - KIRFIELD': { lat: 44.583853, lng: -78.774345, 'LIMESTONE SCREENINGS': 6.00 },
+            'STRADA RUTHERFORD #44': { lat: 43.817801, lng: -79.548734, 'LIMESTONE SCREENINGS': 22.50 },
+            'STRADA MOUNT ALBERT # 41': { lat: 44.094522, lng: -79.332336, 'LIMESTONE SCREENINGS': 18.50 },
+            'HORNER': { lat: 43.608610, lng: -79.518140, 'LIMESTONE SCREENINGS': 18.25, '3/4" CRUSHER RUN 19MM LIME': 22.60, "GRANULAR 'A' LIMESTONE": 22.60, '2" CRUSHER RUN 50MM-LIME': 22.60, '3/4" CLEAR LIMESTONE': 29.90, 'FIRESTONE- 19 TO 37.5MM LIME': 30.51, '37.5MM CONCRETE LIMESTONE': 30.51, '2" CLEAR LIMESTONE': 29.90, 'CONCRETE SAND': 23.25, 'CONCRETE SAND - HEATED': 33.25, 'BRICK SAND': 26.25, 'HL8 LIMESTONE': 30.51, '3/8" PEA GRAVEL': 37.30, '3/8" PEA ROOFING STONE': 37.30, 'HL6 GRAVEL': 26.25, 'HL6 3/4" CONCRETE STONE/GRAVEL': 26.25, '13.2 MM CONCRETE STONE': 31.06, '1/4" CLEAR CHIP - GRAVEL': 22.25, 'HPB - LIMESTONE': 22.50, "GRANULAR 'A'": 22.50, "GRANULAR 'B' - TYPE 1": 17.75, 'GRANULAR B TYPE 2': 22.60 },
+            'LAFARGE - BRECHIN': { lat: 44.632648, lng: -79.159391, 'LIMESTONE SCREENINGS': 5.45, 'GRANULAR B - LIMESTONE': 7.75, '3/4" CRUSHER RUN 19MM LIME': 7.30, "GRANULAR 'A' LIMESTONE": 7.30, '2" CRUSHER RUN 50MM-LIME': 7.30, '3/4" CLEAR LIMESTONE': 13.40, '1" CLEAR LIMESTONE': 13.40, '2" CLEAR LIMESTONE': 13.40, 'GABION STONE': 17.00, 'RIP RAP': 17.00, '450MM            - 600MM RIP RAP': 17.00, 'HL8 LIMESTONE': 13.40, 'HPB - LIMESTONE': 15.00, 'GRANULAR B TYPE 2': 7.30 },
+            'OLYMPIA SAND & GRAVEL': { lat: 44.019901, lng: -79.455304, "GRANULAR 'A'": 10.44, "GRANULAR 'B' - TYPE 1": 7.19 },
+            'STRADA CALEDON #42': { lat: 43.835143, lng: -79.909877, 'LIMESTONE SCREENINGS': 25.00, 'SANDFILL': 17.00, '3/4" CRUSHER RUN 19MM LIME': 26.00, '2" CRUSHER RUN 50MM-LIME': 26.00, '3/4" CLEAR LIMESTONE': 33.00, '2" CLEAR LIMESTONE': 34.00, 'GABION STONE': 36.00, '3/8" PEA GRAVEL': 32.00, 'HL6 GRAVEL': 28.00, 'HL6 3/4" CONCRETE STONE/GRAVEL': 28.00, 'HPB - LIMESTONE': 29.00, "GRANULAR 'A'": 21.50, "GRANULAR 'B' - TYPE 1": 18.50 },
+            'CBM - BLUE CIRCLE BOWMANVILLE': { lat: 43.900941, lng: -78.674940, 'LIMESTONE SCREENINGS': 13.70 },
+            'DUFFERIN MILTON': { lat: 43.495748, lng: -79.957159, 'LIMESTONE SCREENINGS': 11.96 },
+            'CBM - DUNTROON (OSPREY)': { lat: 44.452696, lng: -80.219364, 'LIMESTONE SCREENINGS': 5.75, '3/4" CRUSHER RUN 19MM LIME': 9.25, '2" CRUSHER RUN 50MM-LIME': 9.25, '3/4" CLEAR LIMESTONE': 16.45, 'FIRESTONE- 19 TO 37.5MM LIME': 17.65, '2" CLEAR LIMESTONE': 16.45, 'GABION STONE': 20.10, 'HL6 3/4" CONCRETE STONE/GRAVEL': 16.80, '13.2 MM CONCRETE STONE': 17.65, 'GRANULAR B TYPE 2': 9.25 },
+            'DUIVENVOORDEN 9th LINE (INN)': { lat: 44.257575, lng: -79.624130, 'LIMESTONE SCREENINGS': 17.00, '3/4" CRUSHER RUN 19MM LIME': 18.50, '2" CRUSHER RUN 50MM-LIME': 18.50, 'HL6 GRAVEL': 28.00, "GRANULAR 'A'": 20.00 },
+            'CBM - ABERFOYLE': { lat: 43.520470, lng: -80.153040, '3/4" ROUND GRAVEL': 19.75, '1"- 11/2" ROUND GRAVEL': 27.34, 'CONCRETE SAND': 14.20, '3/8" PEA GRAVEL': 25.20, '3/8" PEA ROOFING STONE': 25.20, 'HL6 GRAVEL': 20.96, 'HL6 3/4" CONCRETE STONE/GRAVEL': 20.96, '1/4" CLEAR CHIP - GRAVEL': 11.40, '5MM CLEAR GRAVEL': 12.05, 'FILTER SAND': 14.25, "GRANULAR 'B' - TYPE 1": 8.90, '3/4 RECYCLED CONCRETE': 8.50, '2" RECYCLED CONCRETE': 8.50, '1/4" ROUND STONE': 11.40 },
+            'STRADA WOODBINE MARKHAM #43': { lat: 43.883062, lng: -79.254774, 'LIMESTONE SCREENINGS': 21.00, 'SANDFILL': 16.00, '3/4" CRUSHER RUN 19MM LIME': 22.50, '2" CRUSHER RUN 50MM-LIME': 22.50, '3/4" CLEAR LIMESTONE': 28.50, '2" CLEAR LIMESTONE': 28.50, 'GABION STONE': 34.00, 'HPB - LIMESTONE': 27.50, "GRANULAR 'A'": 26.00, "GRANULAR 'B' - TYPE 1": 18.00, '3/4" RECYCLED AGGREGATES': 10.00, '3/4 RECYCLED CONCRETE': 12.00, '2" RECYCLED AGGREGATES': 10.00 },
+            'JAMES DICK GLEN CHRISTIE #32': { lat: 43.600260, lng: -80.162720, '3/4" CRUSHER RUN 19MM LIME': 16.87, '2" CRUSHER RUN 50MM-LIME': 16.87, '3/4" CLEAR LIMESTONE': 28.87, '2" CLEAR LIMESTONE': 28.87, 'GABION STONE': 37.62, 'HL6 GRAVEL': 28.87 }
+        };
+
+ 
+        let selectedTruckType = '';
+        let calculatedLoads = 0;
+        let sortOrder = 'fastest';
+        let selectedYards = [];
+        let selectedTier = 1.3;
+        let totalTravelTime = 0;
+        let map;
+        let siteMarker;
+        let yardMarkers = [];
+        let yardTravelData = {};
+
+        function selectIcon(icon) {
+            document.querySelectorAll('.icon').forEach(item => item.classList.remove('selected'));
+            icon.classList.add('selected');
+            selectedTruckType = icon.textContent.trim();
+            document.querySelectorAll('.load-button').forEach(item => item.classList.remove('selected'));
+            calculatedLoads = 0;
+            deselectAllYards();
+            validateInputs();
+        }
+
+        function selectLoadButton(button) {
+            document.querySelectorAll('.load-button').forEach(item => item.classList.remove('selected'));
+            button.classList.add('selected');
+            if (button.textContent.includes('FULL LOAD')) {
+                document.getElementById('quantity').value = truckCapacities[selectedTruckType];
+                document.getElementById('quantity').style.display = 'none';
+                document.getElementById('quantity-header').style.display = 'none';
+            } else {
+                document.getElementById('quantity').value = '';
+                document.getElementById('quantity').style.display = 'block';
+                document.getElementById('quantity-header').style.display = 'block';
+            }
+            calculateLoads();
+            deselectAllYards();
+            validateInputs();
+        }
+
+        function selectOrderButton(button, order) {
+            document.querySelectorAll('.order-button').forEach(item => {
+                item.classList.remove('selected');
+                item.querySelector('div').style.color = '#000';
+            });
+            button.classList.add('selected');
+            button.querySelector('div').style.color = '#fff';
+            sortOrder = order;
+            calculateResults();
+        }
+
+        function initAutocomplete() {
+            const addressInput = document.getElementById('address');
+            const autocomplete = new google.maps.places.Autocomplete(addressInput);
+            autocomplete.setFields(['geometry']);
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                if (!place.geometry) return;
+                const lat = place.geometry.location.lat();
+                const lng = place.geometry.location.lng();
+                document.getElementById('lat').value = lat;
+                document.getElementById('lng').value = lng;
+                plotSiteMarker(lat, lng);
+                calculateTravelTimes(lat, lng);
+                deselectAllYards();
+                validateInputs();
+            });
+        }
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: { lat: 43.70011, lng: -79.4163 },
+                styles: [
+                    { elementType: 'geometry', stylers: [{ color: '#eaeaea' }] },
+                    { elementType: 'labels.text.stroke', stylers: [{ color: '#ffffff' }] },
+                    { elementType: 'labels.text.fill', stylers: [{ color: '#000000' }] },
+                    { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#2d2d2d' }] },
+                    { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#2d2d2d' }] },
+                    { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#d6d6d6' }] },
+                    { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#c9c9c9' }] },
+                    { featureType: 'road.highway.controlled_access', elementType: 'geometry', stylers: [{ color: '#eaeaea' }] },
+                    { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#b0d4e3' }] },
+                    { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#2d2d2d' }] }
+                ]
+            });
+        }
+
+        function plotSiteMarker(lat, lng) {
+            if (siteMarker) siteMarker.setMap(null);
+            siteMarker = new google.maps.Marker({
+                position: { lat, lng },
+                map: map,
+                title: 'Site Address',
+                icon: {
+                    url: 'https://img.icons8.com/ultraviolet/40/000000/marker.png',
+                    scaledSize: new google.maps.Size(40, 40),
+                    fillOpacity: 1,
+                    strokeColor: '#000000',
+                    strokeWeight: 2
+                }
+            });
+            map.setCenter({ lat, lng });
+        }
+
+        function plotYardMarkers() {
+            clearYardMarkers();
+            Object.keys(yards).forEach((yard, index) => {
+                const { lat, lng } = yards[yard];
+                const marker = new google.maps.Marker({
+                    position: { lat, lng },
+                    map: map,
+                    title: yard,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        fillColor: selectedYards.includes(yard) ? '#0078d0' : '#808080',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2
+                    }
+                });
+                const infowindow = new google.maps.InfoWindow({
+                    content: `<div class="info-window"><b>${yard}</b><br>Time: <b class="time">${yardTravelData[yard].totalTravelTime.toFixed(2)}</b> mins<br>Total Cost: <b class="total-cost">$${(yards[yard]['LIMESTONE SCREENINGS'] * parseFloat(document.getElementById('quantity').value) + (haulageRatesPerMinutePerTon[selectedTruckType] * yardTravelData[yard].totalTravelTime * truckCapacities[selectedTruckType] * calculatedLoads)).toFixed(2)}</b></div>`,
+                    disableAutoPan: true
+                });
+                marker.addListener('mouseover', () => {
+                    infowindow.open(map, marker);
+                    marker.setIcon({
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: '#cce7ff',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2
+                    });
+                });
+                marker.addListener('mouseout', () => {
+                    infowindow.close();
+                    marker.setIcon({
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        fillColor: selectedYards.includes(yard) ? '#0078d0' : '#808080',
+                        fillOpacity: 1,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2
+                    });
+                });
+                marker.addListener('click', () => {
+                    toggleYardSelection(null, yard, marker);
+                    displaySelectedYards();
+                    updateResultsSelection();
+                });
+                yardMarkers.push(marker);
+            });
+        }
+
+        function clearYardMarkers() {
+            yardMarkers.forEach(marker => marker.setMap(null));
+            yardMarkers = [];
+        }
+
+        function calculateLoads() {
+            const quantityInput = document.getElementById('quantity');
+            const quantity = parseFloat(quantityInput.value);
+            if (selectedTruckType && quantity) {
+                if (document.querySelector('.load-button.selected').textContent.includes('UNDERLOAD') && quantity > truckCapacities[selectedTruckType]) {
+                    quantityInput.value = truckCapacities[selectedTruckType];
+                }
+                calculatedLoads = Math.ceil(quantity / truckCapacities[selectedTruckType]);
+            }
+        }
+
+        function calculateTravelTimes(siteLat, siteLng) {
+            const siteLatLng = new google.maps.LatLng(siteLat, siteLng);
+            const yardEntries = Object.entries(yards);
+            const batchSize = 25; 
+            const batches = [];
+
+            // Create batches
+            for (let i = 0; i < yardEntries.length; i += batchSize) {
+                batches.push(yardEntries.slice(i, i + batchSize));
+            }
+
+            // Process each batch
+            Promise.all(batches.map(batch => {
+                return new Promise((resolve, reject) => {
+                    const origins = batch.map(([yardName, yardData]) => new google.maps.LatLng(yardData.lat, yardData.lng));
+                    const service = new google.maps.DistanceMatrixService();
+                    service.getDistanceMatrix({
+                        origins: origins,
+                        destinations: [siteLatLng],
+                        travelMode: 'DRIVING',
+                        drivingOptions: {
+                            departureTime: new Date(),
+                            trafficModel: 'pessimistic'
+                        }
+                    }, (response, status) => {
+                        if (status !== 'OK') {
+                            reject(status);
+                            return;
+                        }
+
+                        const results = response.rows;
+                        batch.forEach(([yardName], index) => {
+                            const element = results[index].elements[0];
+                            const travelTime = (element.duration.value / 60) * 1.5;
+                            const totalTravelTime = (travelTime * 2) + 25;
+                            const distance = element.distance.text;
+                            yardTravelData[yardName] = { totalTravelTime, distance };
+                        });
+                        resolve();
+                    });
+                });
+            })).then(() => {
+                calculateResults();
+            }).catch(error => console.error('Error:', error));
+        }
+
+        function calculateResults() {
+            const material = document.getElementById('material').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            Object.keys(yards).forEach((yard, index) => {
+                if (yards[yard][material] === undefined) return;
+
+                const { totalTravelTime, distance } = yardTravelData[yard];
+                const haulageRatePerLoad = haulageRatesPerMinutePerTon[selectedTruckType] * totalTravelTime * truckCapacities[selectedTruckType];
+                const haulageCost = haulageRatePerLoad * calculatedLoads;
+                const materialCost = yards[yard][material] * quantity;
+                const totalCost = materialCost + haulageCost;
+                const haulerRate = haulageCost / quantity;
+
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result-item';
+                if (selectedYards.includes(yard)) resultDiv.classList.add('selected');
+                resultDiv.innerHTML = `
+                    <p class="yard-name">${index + 1}. ${yard}</p>
+                    <p>Distance: ${distance}</p>
+                    <p>Material Cost: $${materialCost.toFixed(2)}</p>
+                    <p>Total Haulage: $${haulageCost.toFixed(2)}</p>
+                    <p class="hauler-rate">Hauler Rate: <b>$${haulerRate.toFixed(2)}/mt</b></p>
+                    <p class="time">Time: <b>${totalTravelTime.toFixed(2)}</b> mins</p>
+                    <p class="total-cost">Total Cost: <b><u>$${totalCost.toFixed(2)}</u></b></p>
+                `;
+                resultDiv.onclick = () => {
+                    toggleYardSelection(resultDiv, yard, yardMarkers[index]);
+                    displaySelectedYards();
+                    updateResultsSelection();
+                };
+                resultDiv.onmouseover = () => {
+                    map.setCenter({ lat: yards[yard].lat, lng: yards[yard].lng });
+                    google.maps.event.trigger(yardMarkers[index], 'mouseover');
+                };
+                resultDiv.onmouseout = () => {
+                    google.maps.event.trigger(yardMarkers[index], 'mouseout');
+                };
+                resultsContainer.appendChild(resultDiv);
+            });
+
+            sortResults(resultsContainer);
+            plotYardMarkers();
+        }
+
+        function toggleYardSelection(resultDiv, yard, marker) {
+            const index = selectedYards.indexOf(yard);
+            if (index > -1) {
+                selectedYards.splice(index, 1);
+                if (resultDiv) resultDiv.classList.remove('selected');
+            } else {
+                selectedYards.push(yard);
+                if (resultDiv) resultDiv.classList.add('selected');
+            }
+
+            document.getElementById('confirm').style.display = selectedYards.length > 0 ? 'block' : 'none';
+
+            if (marker) {
+                marker.setIcon({
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 8,
+                    fillColor: selectedYards.includes(yard) ? '#0078d0' : '#808080',
+                    fillOpacity: 1,
+                    strokeColor: '#ffffff',
+                    strokeWeight: 2
+                });
+            }
+            updateResultsSelection(); // Automatically update the yard list when a marker is clicked
+        }
+
+        function deselectAllYards() {
+            selectedYards = [];
+            displaySelectedYards();
+            plotYardMarkers();
+            document.getElementById('confirm').style.display = 'none';
+            document.getElementById('tier-selection').style.display = 'none';
+            document.getElementById('generate-buttons').style.display = 'none';
+            document.querySelectorAll('.result-item').forEach(item => item.classList.remove('selected'));
+        }
+
+        function sortResults(container) {
+            const results = Array.from(container.children);
+            results.sort((a, b) => {
+                const aTime = parseFloat(a.querySelector('.time b').textContent);
+                const bTime = parseFloat(b.querySelector('.time b').textContent);
+                const aCost = parseFloat(a.querySelector('.total-cost b').textContent.replace('$', '').replace(',', ''));
+                const bCost = parseFloat(b.querySelector('.total-cost b').textContent.replace('$', '').replace(',', ''));
+                if (sortOrder === 'fastest') {
+                    return aTime - bTime;
+                } else if (sortOrder === 'cheapest') {
+                    return aCost - bCost;
+                } else if (sortOrder === 'mixed') {
+                    return (aTime + aCost) - (bTime + bCost);
+                }
+            });
+
+            container.innerHTML = '';
+            results.forEach((result, index) => {
+                const yardName = result.querySelector('.yard-name').textContent.split('. ')[1];
+                result.querySelector('.yard-name').innerHTML = `${index + 1}. ${yardName}`;
+                container.appendChild(result);
+            });
+        }
+
+        function showTierSelection() {
+            document.getElementById('tier-selection').style.display = 'block';
+            document.getElementById('tier-selection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setSelectedTier(button, tier) {
+            document.querySelectorAll('.tier-selection button').forEach(item => item.classList.remove('selected'));
+            button.classList.add('selected');
+            selectedTier = tier;
+            document.getElementById('generate-buttons').style.display = 'flex';
+        }
+
+        function generateQuote() {
+            const material = document.getElementById('material').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            const customerName = document.getElementById('customer-name').value;
+            const projectName = document.getElementById('project-name').value;
+            const quotes = selectedYards.map(yard => {
+                const materialCost = yards[yard]['LIMESTONE SCREENINGS'] * quantity;
+                const haulageCost = calculateHaulageCost(yard);
+                const totalCost = materialCost + haulageCost;
+                const finalPrice = totalCost * selectedTier;
+                const haulerRate = haulageCost / quantity;
+                return { yard, materialCost, haulageCost, totalCost, finalPrice, haulerRate };
+            });
+            quotes.sort((a, b) => (b.finalPrice - b.totalCost) - (a.finalPrice - a.totalCost));
+
+            const quoteTab = window.open('', '_blank');
+            quoteTab.document.write(`
+                <html>
+                <head>
+                    <title>Internal Quote</title>
+                    <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            padding: 20px;
+                            background-color: #fff;
+                            color: #000;
+                            margin: 0 5%;
+                        }
+                        .grid {
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+                            gap: 10px;
+                        }
+                        .grid div {
+                            padding: 10px;
+                            border: 1px solid #000;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+                        table, th, td {
+                            border: 1px solid black;
+                        }
+                        th, td {
+                            padding: 10px;
+                            text-align: left;
+                        }
+                        .final-price {
+                            font-weight: bold;
+                            font-size: 24px;
+                            text-decoration: underline;
+                            margin-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Internal Quote</h1>
+                    <div class="grid">
+                        <div>Project Name:</div><div>${projectName}</div>
+                        <div>Customer Name:</div><div>${customerName}</div>
+                        <div>Site Address:</div><div>${document.getElementById('address').value}</div>
+                    </div>
+                    <h2>Selected Yards and Prices (Tier ${selectedTier})</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Yard</th>
+                                <th>Material</th>
+                                <th>Truck Type</th>
+                                <th>Hauler Rate</th>
+                                <th>Material Cost</th>
+                                <th>Price</th>
+                                <th>$ Margin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${quotes.map(quote => {
+                                const margin = quotes[0].finalPrice - quote.totalCost;
+                                return `
+                                    <tr>
+                                        <td>${quote.yard}</td>
+                                        <td>LIMESTONE SCREENINGS</td>
+                                        <td>${selectedTruckType}</td>
+                                        <td>$${quote.haulerRate.toFixed(2)}</td>
+                                        <td>$${quote.materialCost.toFixed(2)}</td>
+                                        <td>$${quote.finalPrice.toFixed(2)}</td>
+                                        <td>$${margin.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                    <div class="final-price">Final Price: $${quotes[0].finalPrice.toFixed(2)}</div>
+                </body>
+                </html>
+            `);
+            quoteTab.document.close();
+        }
+
+        function calculateHaulageCost(yard) {
+            const haulageRatePerLoad = haulageRatesPerMinutePerTon[selectedTruckType] * yardTravelData[yard].totalTravelTime * truckCapacities[selectedTruckType];
+            return haulageRatePerLoad * calculatedLoads;
+        }
+
+        function generateEmail() {
+            const customerName = document.getElementById('customer-name').value;
+            const projectName = document.getElementById('project-name').value;
+            const address = document.getElementById('address').value;
+
+            const emailContent = `
+Dear ${customerName},
+
+I hope this email finds you well. Please find below the details for the project "${projectName}".
+
+Project Name: ${projectName}
+Customer Name: ${customerName}
+Site Address: ${address}
+
+We have selected the following yards for the materials you requested:
+
+${selectedYards.map(yard => `
+Yard: ${yard}
+Material: LIMESTONE SCREENINGS
+`).join('')}
+
+Please let us know if you have any questions or require further information.
+
+Best regards,
+[Your Company Name]
+            `;
+
+            const emailTab = window.open('', '_blank');
+            emailTab.document.write(`
+                <html>
+                <head>
+                    <title>Generated Email</title>
+                </head>
+                <body>
+                    <pre>${emailContent}</pre>
+                </body>
+                </html>
+            `);
+            emailTab.document.close();
+        }
+
+        function displaySelectedYards() {
+            const selectedYardContainer = document.getElementById('selected-yards');
+            selectedYardContainer.innerHTML = selectedYards.map(yard => `
+                <span class="selected-yard" onmouseover="showInfoWindow(this, '${yard}')">
+                    ${yard} <span class="remove-yard" onclick="removeSelectedYard('${yard}')">x</span>
+                </span>
+            `).join(' ');
+        }
+
+        function removeSelectedYard(yard) {
+            const index = selectedYards.indexOf(yard);
+            if (index > -1) {
+                selectedYards.splice(index, 1);
+                displaySelectedYards();
+                plotYardMarkers();
+                document.querySelectorAll('.result-item').forEach(item => {
+                    if (item.querySelector('.yard-name').textContent.includes(yard)) {
+                        item.classList.remove('selected');
+                    }
+                });
+            }
+        }
+
+        function resetSelections() {
+            selectedYards = [];
+            displaySelectedYards();
+            plotYardMarkers();
+            document.getElementById('confirm').style.display = 'none';
+            document.getElementById('tier-selection').style.display = 'none';
+            document.getElementById('generate-buttons').style.display = 'none';
+            document.querySelectorAll('.result-item').forEach(item => item.classList.remove('selected'));
+        }
+
+        function displayNumberOptions() {
+            const numberOptions = document.getElementById('number-options');
+            const number = parseInt(numberOptions.value);
+            const resultsContainer = document.getElementById('results');
+            const results = Array.from(resultsContainer.children);
+            results.forEach((result, index) => {
+                result.style.display = index < number || number === 0 ? 'block' : 'none';
+            });
+        }
+
+        function selectAllYards() {
+            const selectAllCheckbox = document.getElementById('select-all');
+            const resultsContainer = document.getElementById('results');
+            const results = resultsContainer.querySelectorAll('.result-item');
+            if (selectAllCheckbox.checked) {
+                results.forEach(item => {
+                    const yard = item.querySelector('.yard-name').textContent.split('. ')[1];
+                    if (!selectedYards.includes(yard)) {
+                        selectedYards.push(yard);
+                        item.classList.add('selected');
+                    }
+                });
+            } else {
+                results.forEach(item => {
+                    const yard = item.querySelector('.yard-name').textContent.split('. ')[1];
+                    const index = selectedYards.indexOf(yard);
+                    if (index > -1) {
+                        selectedYards.splice(index, 1);
+                        item.classList.remove('selected');
+                    }
+                });
+            }
+            displaySelectedYards();
+            plotYardMarkers();
+            document.getElementById('confirm').style.display = selectedYards.length > 0 ? 'block' : 'none';
+        }
+
+        function filterYardNames() {
+            const filterInput = document.getElementById('yard-filter').value.toUpperCase();
+            const yardList = document.getElementById('results').children;
+            Array.from(yardList).forEach(yard => {
+                const yardName = yard.querySelector('.yard-name').textContent.toUpperCase();
+                yard.style.display = yardName.includes(filterInput) ? '' : 'none';
+            });
+        }
+
+        function validateInputs() {
+            const truckTypeSelected = !!selectedTruckType;
+            const loadTypeSelected = document.querySelector('.load-button.selected') !== null;
+            const materialSelected = document.getElementById('material').value !== '';
+            const addressEntered = document.getElementById('lat').value !== '' && document.getElementById('lng').value !== '';
+
+            if (truckTypeSelected && loadTypeSelected && materialSelected && addressEntered) {
+                document.querySelector('.map-container').style.display = 'block';
+                document.querySelector('.yard-list').style.display = 'block';
+                document.querySelector('.sort-header').style.display = 'block';
+                document.querySelector('.order-buttons').style.display = 'flex';
+                calculateResults();
+            } else {
+                document.querySelector('.map-container').style.display = 'none';
+                document.querySelector('.yard-list').style.display = 'none';
+                document.querySelector('.sort-header').style.display = 'none';
+                document.querySelector('.order-buttons').style.display = 'none';
+            }
+        }
+
+        function showPopup() {
+            document.getElementById('popup').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            updateHaulageRates();
+        }
+
+        function updateHaulageRates() {
+            ['TRAILER', 'TRIAXLE', 'SLINGER'].forEach(truckType => {
+                const dailyRate = parseFloat(document.getElementById(`${truckType.toLowerCase()}-daily-rate`).value);
+                const workDay = parseFloat(document.getElementById(`${truckType.toLowerCase()}-work-day`).value);
+                const capacity = parseFloat(document.getElementById(`${truckType.toLowerCase()}-capacity`).value);
+                dailyRates[truckType] = dailyRate;
+                workDays[truckType] = workDay;
+                truckCapacities[truckType] = capacity;
+                haulageRatesPerMinutePerTon[truckType] = dailyRate / workDay / capacity;
+            });
+            calculateResults();
+        }
+
+        function updateResultsSelection() {
+            document.querySelectorAll('.result-item').forEach(item => {
+                const yardName = item.querySelector('.yard-name').textContent.split('. ')[1];
+                if (selectedYards.includes(yardName)) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        window.onload = function() {
+            initAutocomplete();
+            initMap();
+        };
+    </script>
+</head>
+<body>
+    <img src="https://img.icons8.com/ultraviolet/80/000000/toolbox.png" alt="Logo" class="logo" onclick="location.reload();">
+    <h1>HaulWorks</h1>
+    <h2 style="margin-top: -10px;">●●● b y e r s ●●●</h2>
+    <div class="container">
+        <form id="yardForm" onsubmit="event.preventDefault(); calculateResults();">
+            <div class="section-header">SELECT TRUCK TYPE
+                <img src="https://img.icons8.com/ultraviolet/20/000000/info.png" alt="Info" class="info-icon" onclick="showPopup()">
+            </div>
+            <div class="icons">
+                <div class="icon" onclick="selectIcon(this)">
+                    <img src="https://img.icons8.com/ultraviolet/50/000000/container-truck.png" alt="Trailer">
+                    <div>TRAILER</div>
+                </div>
+                <div class="icon" onclick="selectIcon(this)">
+                    <img src="https://img.icons8.com/ultraviolet/50/000000/dump-truck.png" alt="TriAxle">
+                    <div>TRIAXLE</div>
+                </div>
+                <div class="icon" onclick="selectIcon(this)">
+                    <img src="https://img.icons8.com/ultraviolet/50/000000/tow-truck.png" alt="Slinger">
+                    <div>SLINGER</div>
+                </div>
+            </div>
+            <div class="section-header">SELECT LOAD TYPE</div>
+            <div class="load-buttons">
+                <div class="load-button full-load-icon" onclick="selectLoadButton(this)">
+                    <img src="https://img.icons8.com/ultraviolet/40/100-percents.png" alt="100%">
+                    <div>FULL LOAD</div>
+                </div>
+                <div class="load-button underload-icon" onclick="selectLoadButton(this)">
+                    <img src="https://img.icons8.com/ultraviolet/40/50-percents.png" alt="50%">
+                    <div>UNDERLOAD</div>
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="section-header">SELECT PRODUCT</div>
+                <select id="material" name="material">
+                    <option value="LIMESTONE SCREENINGS">LIMESTONE SCREENINGS</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <div id="quantity-header" class="section-header" style="display: none;">QUANTITY (MT)</div>
+                <input type="number" id="quantity" name="quantity" min="1" oninput="calculateLoads()" style="display: none;">
+            </div>
+            <div class="input-group">
+                <div class="section-header">ENTER SITE ADDRESS</div>
+                <input type="text" id="address" name="address">
+                <input type="hidden" id="lat" name="lat">
+                <input type="hidden" id="lng" name="lng">
+            </div>
+        </form>
+        <div class="map-container" style="display: none;">
+            <img src="https://img.icons8.com/ultraviolet/50/000000/refresh.png" alt="Refresh" class="refresh-icon" onclick="resetSelections()">
+            <div class="sort-header">SELECT PICKUP LOCATIONS</div>
+            <div class="sort-header" style="font-size: 12px; margin-top: 2px;">(USE LIST OR MAP BELOW)</div>
+            <div id="map"></div>
+        </div>
+        <div class="sort-header" style="display: none;">SORT LIST BY</div>
+        <div class="order-buttons" style="display: none;">
+            <div class="order-button" onclick="selectOrderButton(this, 'fastest')">
+                <img src="https://img.icons8.com/ultraviolet/50/000000/clock.png" alt="Fastest">
+                <div>TIME</div>
+            </div>
+            <div class="order-button" onclick="selectOrderButton(this, 'cheapest')">
+                <img src="https://img.icons8.com/ultraviolet/50/000000/us-dollar-circled.png" alt="Cheapest">
+                <div>COST</div>
+            </div>
+            <div class="order-button" onclick="selectOrderButton(this, 'mixed')">
+                <img src="https://img.icons8.com/ultraviolet/50/000000/circled.png" alt="Mixed">
+                <div>MIXED</div>
+            </div>
+        </div>
+        <div id="selected-yards" class="selected-yard-container"></div>
+        <div class="yard-list" style="display: none;">
+            <div class="scroll-container">
+                <div class="input-group-inline">
+                    <label for="yard-filter">Search</label>
+                    <input type="text" id="yard-filter" oninput="filterYardNames()" placeholder="Search yards..">
+                    <label for="number-options">Show Yards</label>
+                    <select id="number-options" onchange="displayNumberOptions()" style="width: auto;">
+                        <option value="0" selected>All</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+                <div class="results" id="results"></div>
+            </div>
+        </div>
+        <div class="checkbox-container" style="display: none;">
+            <input type="checkbox" id="select-all" onclick="selectAllYards()">
+            <label for="select-all">SELECT ALL</label>
+        </div>
+        <button id="confirm" class="button-71" onclick="showTierSelection()" style="display: none;">CONFIRM</button>
+        <div id="tier-selection" class="tier-selection">
+            <input type="text" id="customer-name" placeholder="Customer Name">
+            <input type="text" id="project-name" placeholder="Project Name">
+            <button class="tier-button" onclick="setSelectedTier(this, 1.05)">WALK<span class="tier-percentage">5%</span></button>
+            <button class="tier-button" onclick="setSelectedTier(this, 1.1)">TIER 1<span class="tier-percentage">10%</span></button>
+            <button class="tier-button" onclick="setSelectedTier(this, 1.2)">TIER 2<span class="tier-percentage">20%</span></button>
+            <button class="tier-button" onclick="setSelectedTier(this, 1.3)">TIER 3<span class="tier-percentage">30%</span></button>
+        </div>
+        <div id="generate-buttons" class="button-group" style="display: none;">
+            <button class="button-71" onclick="generateQuote()">
+                <img src="https://img.icons8.com/ultraviolet/50/000000/accounting.png" alt="Generate Quote">
+                <span class="button-text">QUOTE</span>
+            </button>
+            <button class="button-71" onclick="generateEmail()">
+                <img src="https://img.icons8.com/ultraviolet/50/000000/email.png" alt="Generate Email">
+                <span class="button-text">EMAIL</span>
+            </button>
+        </div>
+    </div>
+ <style>
+        .popup-row strong {
+            text-decoration: underline;
+        }
+    </style>
+    <div id="popup" class="popup">
+        <h3>Update Haulage Rates</h3>
+        <div class="popup-row"><strong>TRAILER</strong></div>
+        <div class="popup-row">
+            <label for="trailer-daily-rate">Daily Rate ($):</label>
+            <input type="number" id="trailer-daily-rate" value="1225">
+        </div>
+        <div class="popup-row">
+            <label for="trailer-work-day">Work Day (mins):</label>
+            <input type="number" id="trailer-work-day" value="600">
+        </div>
+        <div class="popup-row">
+            <label for="trailer-capacity">Capacity (mt):</label>
+            <input type="number" id="trailer-capacity" value="36">
+        </div>
+        <div class="popup-row"><strong>TRIAXLE</strong></div>
+        <div class="popup-row">
+            <label for="triaxle-daily-rate">Daily Rate ($):</label>
+            <input type="number" id="triaxle-daily-rate" value="900">
+        </div>
+        <div class="popup-row">
+            <label for="triaxle-work-day">Work Day (mins):</label>
+            <input type="number" id="triaxle-work-day" value="600">
+        </div>
+        <div class="popup-row">
+            <label for="triaxle-capacity">Capacity (mt):</label>
+            <input type="number" id="triaxle-capacity" value="22.5">
+        </div>
+        <div class="popup-row"><strong>SLINGER</strong></div>
+        <div class="popup-row">
+            <label for="slinger-daily-rate">Daily Rate ($):</label>
+            <input type="number" id="slinger-daily-rate" value="1500">
+        </div>
+        <div class="popup-row">
+            <label for="slinger-work-day">Work Day (mins):</label>
+            <input type="number" id="slinger-work-day" value="600">
+        </div>
+        <div class="popup-row">
+            <label for="slinger-capacity">Capacity (mt):</label>
+            <input type="number" id="slinger-capacity" value="20">
+        </div>
+        <button class="close-btn" onclick="closePopup()">Confirm</button>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            initAutocomplete();
+            initMap();
+        });
+    </script>
+</body>
+</html>
